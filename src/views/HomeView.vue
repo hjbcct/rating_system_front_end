@@ -1,12 +1,72 @@
 <script setup lang="ts">
 import Table from '../components/Table.vue'
 import Upload from '../components/Upload.vue'
+import ExportExcel from '../components/ExportExcel.vue'
 import { useSchoolIndexStore } from '@/stores/schoolIndex'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useTableStore } from '@/stores/table'
 const schoolIndexStore = useSchoolIndexStore()
 const schoolIndex = computed(() => schoolIndexStore.schoolIndex)
-// import { ElMessage, ElMessageBox } from 'element-plus'
-// ElMessage.warning(`The limit is 3, you selected files this time, add up to`)
+
+const tableStore = useTableStore() // 引入 Pinia 的 tableStore
+const tableArray = computed(() => tableStore.tableArr)
+
+// const tableArray = ref([
+//   {
+//     tableData: [
+//       {
+//         num: 1,
+//         name: 'Alice',
+//         job: 'Engineer',
+//         rank0: 5,
+//         rank1: 3,
+//         rank2: 4,
+//         rank3: 5,
+//         advice: 'Good performance',
+//         confidence: 0.95,
+//       },
+//       {
+//         num: 2,
+//         name: 'Bob',
+//         job: 'Designer',
+//         rank0: 4,
+//         rank1: 2,
+//         rank2: 3,
+//         rank3: 4,
+//         advice: 'Needs improvement',
+//         confidence: 0.8,
+//       },
+//     ],
+//     rankLength: 4,
+//   },
+//   {
+//     tableData: [
+//       {
+//         num: 1,
+//         name: 'Charlie',
+//         job: 'Manager',
+//         rank0: 4,
+//         rank1: 4,
+//         rank2: 4,
+//         rank3: 4,
+//         advice: 'Consistent',
+//         confidence: 0.9,
+//       },
+//       {
+//         num: 2,
+//         name: 'David',
+//         job: 'Analyst',
+//         rank0: 3,
+//         rank1: 5,
+//         rank2: 4,
+//         rank3: 5,
+//         advice: 'Strong analysis',
+//         confidence: 0.85,
+//       },
+//     ],
+//     rankLength: 4,
+//   },
+// ])
 </script>
 
 <template>
@@ -61,71 +121,9 @@ const schoolIndex = computed(() => schoolIndexStore.schoolIndex)
     </div>
   </div>
 
-  <ExportExcel :tableArray="tableArray" />
+  <ExportExcel :tableArray="tableArray[schoolIndex]" />
   <!-- </main> -->
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
-import ExportExcel from '../components/ExportExcel.vue'
-
-const tableArray = ref([
-  {
-    tableData: [
-      {
-        num: 1,
-        name: 'Alice',
-        job: 'Engineer',
-        rank0: 5,
-        rank1: 3,
-        rank2: 4,
-        rank3: 5,
-        advice: 'Good performance',
-        confidence: 0.95,
-      },
-      {
-        num: 2,
-        name: 'Bob',
-        job: 'Designer',
-        rank0: 4,
-        rank1: 2,
-        rank2: 3,
-        rank3: 4,
-        advice: 'Needs improvement',
-        confidence: 0.8,
-      },
-    ],
-    rankLength: 4,
-  },
-  {
-    tableData: [
-      {
-        num: 1,
-        name: 'Charlie',
-        job: 'Manager',
-        rank0: 4,
-        rank1: 4,
-        rank2: 4,
-        rank3: 4,
-        advice: 'Consistent',
-        confidence: 0.9,
-      },
-      {
-        num: 2,
-        name: 'David',
-        job: 'Analyst',
-        rank0: 3,
-        rank1: 5,
-        rank2: 4,
-        rank3: 5,
-        advice: 'Strong analysis',
-        confidence: 0.85,
-      },
-    ],
-    rankLength: 4,
-  },
-])
-</script>
 
 <style lang="scss" scoped>
 .home-container {

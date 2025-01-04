@@ -65,15 +65,12 @@ const tableRowClassName: CellStyle<TableItem> = ({ row, column, rowIndex, column
   if (!column.property) return {}
   let isRank = column.property.includes('rank')
   if (!isRank) return {}
-  console.log(column.property)
   let rankIndex = Number(column.property[4])
-  // check if rankIndex is number
   if (isNaN(rankIndex)) {
-    console.error('rankIndex is not a number')
     return {}
   }
+
   if (row[`confidence${rankIndex}`] < 0.95 && isRank) {
-    console.log('warning-row')
     return { backgroundColor: 'pink' } // 低于60分，背景色为红色
   }
   return {}
