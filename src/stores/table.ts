@@ -25,10 +25,9 @@ export const useTableStore = defineStore('tableStore', () => {
       { tableData: [], rankLength: 0 },
     ],
   ])
-  const sumTableArr = ref<SumTable[]>([])
+  const sumTableArr = ref<SumTable[]>([{ tableData: [] }, { tableData: [] }, { tableData: [] }])
 
   const ratioArr = ref<number[][]>([
-    [0.25, 0.25, 0.25, 0.25],
     [0.25, 0.25, 0.25, 0.25],
     [0.25, 0.25, 0.25, 0.25],
     [0.25, 0.25, 0.25, 0.25],
@@ -37,32 +36,38 @@ export const useTableStore = defineStore('tableStore', () => {
   // 方法：设置 table 数据
   const setTable = (newTable: TableItem[], schoolIndex: number, stuffIndex: number) => {
     if (tableArr.value[schoolIndex][stuffIndex].tableData.length === 0) {
-      console.log('tableArr.value[schoolIndex][stuffIndex].tableData.length === 0')
       tableArr.value[schoolIndex][stuffIndex].tableData = newTable
       tableArr.value[schoolIndex][stuffIndex].rankLength = 0
     } else {
-      console.log('tableArr.value[schoolIndex][stuffIndex].tableData.length !== 0')
       tableArr.value[schoolIndex][stuffIndex].rankLength =
         tableArr.value[schoolIndex][stuffIndex].rankLength + 1
+      let curRankLength = tableArr.value[schoolIndex][stuffIndex].rankLength
       for (let i = 0; i < newTable.length; i++) {
-        tableArr.value[schoolIndex][stuffIndex].tableData[i][
-          `rank${tableArr.value[schoolIndex][stuffIndex].rankLength}`
-        ] = newTable[i].rank0
+        tableArr.value[schoolIndex][stuffIndex].tableData[i][`rank${curRankLength}`] =
+          newTable[i].rank0
+        tableArr.value[schoolIndex][stuffIndex].tableData[i][`confidence${curRankLength}`] =
+          newTable[i].confidence0
       }
     }
     refreshSumTable(schoolIndex)
   }
 
-  //  ratioArr发生改变时，执行refreshSumTable函数
-  watch(ratioArr, () => {
-    for (let i = 0; i < 3; i++) {
-      refreshSumTable(i)
-    }
-  })
+  // 监听 ratioArr.value 的变化
+  watch(
+    ratioArr,
+    () => {
+      console.log('ratioArr changed!')
+      for (let i = 0; i < 3; i++) {
+        refreshSumTable(i)
+      }
+    },
+    { deep: true },
+  ) // 添加 deep: true 来确保监听数组内容的变化
 
   const refreshSumTable = (schoolIndex: number) => {
     const stuffLength = tableArr.value[schoolIndex].length
     const tableList = tableArr.value[schoolIndex]
+    sumTableArr.value[schoolIndex].tableData = []
 
     if (
       tableArr.value[schoolIndex][0].tableData.length <= 0 ||
@@ -82,7 +87,6 @@ export const useTableStore = defineStore('tableStore', () => {
     }
 
     //  初始化 sumTableArr
-    //
     for (let i = 0; i < tableLength; i++) {
       let sumTableItem: SumTableData = {
         num: i,
@@ -92,19 +96,27 @@ export const useTableStore = defineStore('tableStore', () => {
         avgRank1: 0,
         avgRank2: 0,
         avgRank3: 0,
+        sumRank: 0,
       }
       for (let index = 0; index < stuffLength; index++) {
-        let sumRank = 0
-        for (let sIndex = 0; sIndex < tableList[0].rankLength; sIndex++) {
-          sumRank += tableList[index].tableData[i][`rank${sIndex}`]
+        let sum = 0
+        for (let sIndex = 0; sIndex < tableList[index].rankLength + 1; sIndex++) {
+          sum = sum + tableList[index].tableData[i][`rank${sIndex}`] / 1
         }
         if (index > 3) {
           console.error('index > 3')
           return
         }
         //@ts-ignore
-        sumTableItem[`avgRank${index}`] = sumRank / tableList[index].rankLength
+        sumTableItem[`avgRank${index}`] = sum / (tableList[index].rankLength + 1)
       }
+
+      sumTableItem.sumRank =
+        sumTableItem.avgRank0 * ratioArr.value[schoolIndex][0] +
+        sumTableItem.avgRank1 * ratioArr.value[schoolIndex][1] +
+        sumTableItem.avgRank2 * ratioArr.value[schoolIndex][2] +
+        sumTableItem.avgRank3 * ratioArr.value[schoolIndex][3]
+
       sumTableArr.value[schoolIndex].tableData.push(sumTableItem)
     }
   }

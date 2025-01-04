@@ -75,8 +75,8 @@ const schoolIndex = computed(() => schoolIndexStore.schoolIndex)
   .department-block {
     display: flex;
     flex-direction: column;
-    margin: 3rem 0;
-    padding: 5rem;
+    margin: 1rem 0;
+    padding: 3rem;
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

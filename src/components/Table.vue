@@ -1,12 +1,16 @@
 <template>
   <div class="table-container">
-    <el-table :data="table.tableData" style="width: 100%" :row-class-name="tableRowClassName">
-      <el-table-column fixed prop="num" sortable label="序号" width="180" />
-      <el-table-column fixed prop="name" label="述职人员" width="180" />
-      <el-table-column fixed prop="job" label="单位职务" width="180" />
+    <el-table
+      :data="table.tableData"
+      style="width: 90%; height: 100%"
+      :cell-style="tableRowClassName"
+    >
+      <el-table-column fixed prop="num" label="序号" width="70" />
+      <el-table-column fixed prop="name" label="述职人员" width="120" />
+      <el-table-column fixed prop="job" label="单位职务" width="200" />
       <!-- <el-table-column prop="rank" label="评分" width="180" /> -->
       <template v-for="i in table.rankLength + 1" :key="i">
-        <el-table-column :prop="`rank${i - 1}`" sortable :label="`评分${i}`" width="180">
+        <el-table-column :prop="`rank${i - 1}`" sortable :label="`评分${i}`" width="100">
           <template #default="scope">
             <span v-show="scope.row.num !== editIndex">{{ scope.row[`rank${i - 1}`] }}</span>
             <el-input
@@ -16,59 +20,20 @@
           </template>
         </el-table-column>
       </template>
-      <el-table-column label="Operate" width="180" fixed>
+      <el-table-column label="Operate" width="120" fixed>
         <template #default="{ row }">
           <el-button link @click="handleEdit(row)">Edit</el-button>
           <el-button type="primary" link @click="handleSave">Save</el-button>
-          <!-- <el-button type="danger" link @click="handleDelete(row)">Delete</el-button> -->
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="rank" sortable label="评分" width="180">
-        <template #default="scope">
-          <span v-show="scope.$index !== editIndex">{{ scope.row.rank }}</span>
-          <el-input v-show="scope.$index === editIndex" v-model="scope.row.rank"></el-input>
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column prop="advice" label="修改建议" /> -->
     </el-table>
   </div>
 </template>
 
-<style>
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  position: relative;
-  top: -10px;
-}
-
-h3 {
-  font-size: 1.2rem;
-}
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
-}
-
-.el-table .warning-row {
-  --el-table-tr-bg-color: var(--el-color-warning-light-9);
-}
-.el-table .success-row {
-  --el-table-tr-bg-color: var(--el-color-success-light-9);
-}
-</style>
-
 <script lang="ts" setup>
 import { useTableStore } from '@/stores/table'
 import { computed, ref } from 'vue'
+import { type CellStyle, type Column } from 'element-plus/lib'
 
 const tableStore = useTableStore() // 引入 Pinia 的 tableStore
 
@@ -78,6 +43,7 @@ const props = defineProps<{
 }>()
 
 type RankKeys = `rank${number}`
+type ConfidenceKeys = `confidence${number}`
 
 export interface TableItem {
   num: number
@@ -85,7 +51,7 @@ export interface TableItem {
   job: string
   [key: RankKeys]: number
   advice: string
-  confidence: number
+  [key: ConfidenceKeys]: number
 }
 
 export interface Table {
@@ -95,10 +61,22 @@ export interface Table {
 
 const table = computed(() => tableStore.tableArr[props.schoolIndex][props.index]) // 响应式绑定 tableStore.table
 
-const tableRowClassName = ({ row, rowIndex }: { row: TableItem; rowIndex: number }) => {
-  if (row.confidence <= 0.95) {
-    return 'warning-row'
-  } else return ''
+const tableRowClassName: CellStyle<TableItem> = ({ row, column, rowIndex, columnIndex }) => {
+  if (!column.property) return {}
+  let isRank = column.property.includes('rank')
+  if (!isRank) return {}
+  console.log(column.property)
+  let rankIndex = Number(column.property[4])
+  // check if rankIndex is number
+  if (isNaN(rankIndex)) {
+    console.error('rankIndex is not a number')
+    return {}
+  }
+  if (row[`confidence${rankIndex}`] < 0.95 && isRank) {
+    console.log('warning-row')
+    return { backgroundColor: 'pink' } // 低于60分，背景色为红色
+  }
+  return {}
 }
 
 const editIndex = ref(-1)
@@ -113,3 +91,17 @@ const handleEdit = (row: TableItem) => {
   // editIndex.value = table.value!.tableData.indexOf(row)
 }
 </script>
+
+<style>
+.table-container {
+  height: 40vh;
+}
+
+.warning-row {
+  /* --el-table-tr-bg-color: var(--el-color-danger-light-9); */
+  background-color: 'pink';
+}
+.success-row {
+  background-color: 'pink';
+}
+</style>

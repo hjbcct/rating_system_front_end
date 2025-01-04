@@ -1,16 +1,5 @@
 <template>
-  <el-upload
-    v-model:file-list="fileList"
-    class="upload-demo"
-    action="#"
-    :http-request="uploadFile"
-    multiple
-    :on-preview="handlePreview"
-    :on-remove="handleRemove"
-    :before-remove="beforeRemove"
-    :limit="3"
-    :on-exceed="handleExceed"
-  >
+  <el-upload v-model:file-list="fileList" class="upload-demo" action="#" :http-request="uploadFile">
     <el-button type="primary">点击上传</el-button>
     <template #tip>
       <div class="el-upload__tip">请上传pdf文件</div>
@@ -40,28 +29,28 @@ const tableStore = useTableStore() // 引入 Pinia 的 tableStore
 
 const fileList = ref<UploadUserFile[]>([])
 
-const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log(file, uploadFiles)
-}
+// const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
+//   console.log(file, uploadFiles)
+// }
 
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  console.log(uploadFile)
-}
+// const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
+//   console.log(uploadFile)
+// }
 
-const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
-  ElMessage.warning(
-    `The limit is 3, you selected ${files.length} files this time, add up to ${
-      files.length + uploadFiles.length
-    } totally`,
-  )
-}
+// const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
+//   ElMessage.warning(
+//     `The limit is 3, you selected ${files.length} files this time, add up to ${
+//       files.length + uploadFiles.length
+//     } totally`,
+//   )
+// }
 
-const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
-  return ElMessageBox.confirm(`Cancel the transfer of ${uploadFile.name} ?`).then(
-    () => true,
-    () => false,
-  )
-}
+// const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
+//   return ElMessageBox.confirm(`Cancel the transfer of ${uploadFile.name} ?`).then(
+//     () => true,
+//     () => false,
+//   )
+// }
 
 const uploadFile: UploadRequestHandler = async (fileRequest: UploadRequestOptions) => {
   // let file: UploadRawFile = fileRequest().file
@@ -82,7 +71,7 @@ const uploadFile: UploadRequestHandler = async (fileRequest: UploadRequestOption
       name: '李四',
       job: res.names[i][0],
       rank0: score,
-      confidence,
+      confidence0: confidence,
       advice: '无',
     })
   }
