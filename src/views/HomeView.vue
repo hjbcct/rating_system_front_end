@@ -61,8 +61,71 @@ const schoolIndex = computed(() => schoolIndexStore.schoolIndex)
     </div>
   </div>
 
+  <ExportExcel :tableArray="tableArray" />
   <!-- </main> -->
 </template>
+
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
+import ExportExcel from '../components/ExportExcel.vue'
+
+const tableArray = ref([
+  {
+    tableData: [
+      {
+        num: 1,
+        name: 'Alice',
+        job: 'Engineer',
+        rank0: 5,
+        rank1: 3,
+        rank2: 4,
+        rank3: 5,
+        advice: 'Good performance',
+        confidence: 0.95,
+      },
+      {
+        num: 2,
+        name: 'Bob',
+        job: 'Designer',
+        rank0: 4,
+        rank1: 2,
+        rank2: 3,
+        rank3: 4,
+        advice: 'Needs improvement',
+        confidence: 0.8,
+      },
+    ],
+    rankLength: 4,
+  },
+  {
+    tableData: [
+      {
+        num: 1,
+        name: 'Charlie',
+        job: 'Manager',
+        rank0: 4,
+        rank1: 4,
+        rank2: 4,
+        rank3: 4,
+        advice: 'Consistent',
+        confidence: 0.9,
+      },
+      {
+        num: 2,
+        name: 'David',
+        job: 'Analyst',
+        rank0: 3,
+        rank1: 5,
+        rank2: 4,
+        rank3: 5,
+        advice: 'Strong analysis',
+        confidence: 0.85,
+      },
+    ],
+    rankLength: 4,
+  },
+])
+</script>
 
 <style lang="scss" scoped>
 .home-container {
