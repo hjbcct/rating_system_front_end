@@ -34,19 +34,24 @@ export const useTableStore = defineStore('tableStore', () => {
   ])
 
   // 方法：设置 table 数据
-  const setTable = (newTable: TableItem[], schoolIndex: number, stuffIndex: number) => {
+  const setTable = (
+    newTable: TableItem[],
+    schoolIndex: number,
+    stuffIndex: number,
+    srcRankLength: number,
+  ) => {
     if (tableArr.value[schoolIndex][stuffIndex].tableData.length === 0) {
       tableArr.value[schoolIndex][stuffIndex].tableData = newTable
-      tableArr.value[schoolIndex][stuffIndex].rankLength = 0
+      tableArr.value[schoolIndex][stuffIndex].rankLength = srcRankLength
     } else {
-      tableArr.value[schoolIndex][stuffIndex].rankLength =
-        tableArr.value[schoolIndex][stuffIndex].rankLength + 1
-      let curRankLength = tableArr.value[schoolIndex][stuffIndex].rankLength
+      let curRankLength = tableArr.value[schoolIndex][stuffIndex].rankLength + 1
       for (let i = 0; i < newTable.length; i++) {
-        tableArr.value[schoolIndex][stuffIndex].tableData[i][`rank${curRankLength}`] =
-          newTable[i].rank0
-        tableArr.value[schoolIndex][stuffIndex].tableData[i][`confidence${curRankLength}`] =
-          newTable[i].confidence0
+        for (let j = 0; j < srcRankLength; j++) {
+          tableArr.value[schoolIndex][stuffIndex].tableData[i][`rank${curRankLength + j}`] =
+            newTable[i][`rank${j}`]
+          tableArr.value[schoolIndex][stuffIndex].tableData[i][`confidence${curRankLength + j}`] =
+            newTable[i][`rank${j}`]
+        }
       }
     }
     refreshSumTable(schoolIndex)

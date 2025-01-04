@@ -19,6 +19,7 @@ import type {
 } from 'element-plus'
 import { ocrPDF } from '@/api/ocr'
 import type { TableItem } from './Table.vue'
+import { tableV2GridProps } from 'element-plus/es/components/table-v2/src/grid.mjs'
 
 const props = defineProps<{
   index: number
@@ -59,23 +60,24 @@ const uploadFile: UploadRequestHandler = async (fileRequest: UploadRequestOption
   let res = await ocrPDF({ file: fileRequest.file })
   let table: TableItem[] = []
   console.log(res)
-  for (let i = 0; i < res.names.length; i++) {
+  for (let i = 0; i < res.length; i++) {
     let score = 0
     let confidence = 100
-    if (i < res.score.length) {
-      score = res.score[i][0]
-      confidence = res.score[i][1]
-    }
-    table.push({
+    const tableItem: TableItem = {
       num: i + 1,
-      name: '李四',
-      job: res.names[i][0],
-      rank0: score,
-      confidence0: confidence,
+      name: res[i].name,
+      job: res[i].position,
+      rank0: 0,
+      confidence0: 0,
       advice: '无',
-    })
+    }
+    for (let j = 0; j < res[i].scores.length; j++) {
+      tableItem[`rank${j}`] = res[i].scores[j].score
+      tableItem[`confidence${j}`] = res[i].scores[j].confidence
+    }
+    table.push(tableItem)
   }
 
-  tableStore.setTable(table, props.schoolIndex, props.index)
+  tableStore.setTable(table, props.schoolIndex, props.index, res[0].scores.length)
 }
 </script>
