@@ -9,7 +9,7 @@
       <el-table-column fixed prop="name" label="述职人员" width="120" />
       <el-table-column fixed prop="job" label="单位职务" width="200" />
       <!-- <el-table-column prop="rank" label="评分" width="180" /> -->
-      <template v-for="i in table.rankLength + 1" :key="i">
+      <template v-for="i in table.rankLength" :key="i">
         <el-table-column :prop="`rank${i - 1}`" sortable :label="`评分${i}`" width="100">
           <template #default="scope">
             <span v-show="scope.row.num !== editIndex">{{ scope.row[`rank${i - 1}`] }}</span>

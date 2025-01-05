@@ -72,8 +72,8 @@ const uploadFile: UploadRequestHandler = async (fileRequest: UploadRequestOption
       advice: '无',
     }
     for (let j = 0; j < res[i].scores.length; j++) {
-      tableItem[`rank${j}`] = res[i].scores[j].score
-      tableItem[`confidence${j}`] = res[i].scores[j].confidence
+      tableItem[`rank${j}`] = Number(res[i].scores[j].score)
+      tableItem[`confidence${j}`] = Number(res[i].scores[j].confidence)
     }
     table.push(tableItem)
   }

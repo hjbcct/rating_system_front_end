@@ -15,7 +15,7 @@ type Response = {
 
 const instance = axios.create({
   baseURL: '/',
-  timeout: 500000,
+  timeout: 50000000,
 })
 console.log('import.meta.env.VITE_APP_ENV', import.meta.env.VITE_APP_ENV)
 if (import.meta.env.VITE_APP_ENV === 'development' || import.meta.env.VITE_APP_ENV === 'local') {
@@ -43,6 +43,7 @@ instance.interceptors.response.use(
     // console.log('axios response', response)
     // 返回响应data响应体
     const res: Response = response?.data
+    console.log('axios response:', res)
     if (Number(res.code) !== 200) {
       // showNotify({ type: 'warning', message: res.data.msg  });
       console.log('server response error:', res.data.msg)

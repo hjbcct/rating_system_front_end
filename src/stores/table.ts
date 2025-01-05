@@ -40,19 +40,20 @@ export const useTableStore = defineStore('tableStore', () => {
     stuffIndex: number,
     srcRankLength: number,
   ) => {
-    if (tableArr.value[schoolIndex][stuffIndex].tableData.length === 0) {
+    if (tableArr.value[schoolIndex][stuffIndex].rankLength === 0) {
       tableArr.value[schoolIndex][stuffIndex].tableData = newTable
       tableArr.value[schoolIndex][stuffIndex].rankLength = srcRankLength
     } else {
-      let curRankLength = tableArr.value[schoolIndex][stuffIndex].rankLength + 1
+      let curRankLength = tableArr.value[schoolIndex][stuffIndex].rankLength
       for (let i = 0; i < newTable.length; i++) {
         for (let j = 0; j < srcRankLength; j++) {
           tableArr.value[schoolIndex][stuffIndex].tableData[i][`rank${curRankLength + j}`] =
             newTable[i][`rank${j}`]
           tableArr.value[schoolIndex][stuffIndex].tableData[i][`confidence${curRankLength + j}`] =
-            newTable[i][`rank${j}`]
+            newTable[i][`confidence${j}`]
         }
       }
+      tableArr.value[schoolIndex][stuffIndex].rankLength += srcRankLength
     }
     refreshSumTable(schoolIndex)
   }
@@ -105,7 +106,7 @@ export const useTableStore = defineStore('tableStore', () => {
       }
       for (let index = 0; index < stuffLength; index++) {
         let sum = 0
-        for (let sIndex = 0; sIndex < tableList[index].rankLength + 1; sIndex++) {
+        for (let sIndex = 0; sIndex < tableList[index].rankLength; sIndex++) {
           sum = sum + tableList[index].tableData[i][`rank${sIndex}`] / 1
         }
         if (index > 3) {
@@ -113,7 +114,7 @@ export const useTableStore = defineStore('tableStore', () => {
           return
         }
         //@ts-ignore
-        sumTableItem[`avgRank${index}`] = sum / (tableList[index].rankLength + 1)
+        sumTableItem[`avgRank${index}`] = sum / tableList[index].rankLength
       }
 
       sumTableItem.sumRank =
