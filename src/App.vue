@@ -17,6 +17,7 @@
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useSchoolIndexStore } from './stores/schoolIndex'
+
 // import HelloWorld from './components/HelloWorld.vue'
 let isActive = ref<boolean[]>([false, false, false])
 // const router = useRouter()

@@ -32,8 +32,10 @@
 
 <script lang="ts" setup>
 import { useTableStore } from '@/stores/table'
+import type { CellStyle } from 'element-plus'
 import { computed, ref } from 'vue'
-import { type CellStyle, type Column } from 'element-plus/lib'
+// import type { CellAddress } from 'xlsx';
+// import { type CellStyle, type Column } from 'element-plus/lib'
 
 const tableStore = useTableStore() // 引入 Pinia 的 tableStore
 
@@ -72,7 +74,7 @@ const tableRowClassName: CellStyle<TableItem> = ({ row, column, rowIndex, column
     return {}
   }
 
-  if (row[`confidence${rankIndex}`] < 0.95 && isRank) {
+  if (row[`rank${rankIndex}`] <= 70 || (row[`confidence${rankIndex}`] < 0.95 && isRank)) {
     return { backgroundColor: 'pink' } // 低于60分，背景色为红色
   }
   return {}
