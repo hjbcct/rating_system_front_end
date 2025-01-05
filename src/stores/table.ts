@@ -51,6 +51,8 @@ export const useTableStore = defineStore('tableStore', () => {
             newTable[i][`rank${j}`]
           tableArr.value[schoolIndex][stuffIndex].tableData[i][`confidence${curRankLength + j}`] =
             newTable[i][`confidence${j}`]
+          tableArr.value[schoolIndex][stuffIndex].tableData[i][`imgUrl${curRankLength + j}`] =
+            newTable[i][`imgUrl${j}`]
         }
       }
       tableArr.value[schoolIndex][stuffIndex].rankLength += srcRankLength

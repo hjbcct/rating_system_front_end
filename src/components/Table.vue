@@ -44,6 +44,7 @@ const props = defineProps<{
 
 type RankKeys = `rank${number}`
 type ConfidenceKeys = `confidence${number}`
+type imgUrlKeys = `imgUrl${number}`
 
 export interface TableItem {
   num: number
@@ -52,6 +53,7 @@ export interface TableItem {
   [key: RankKeys]: number
   advice: string
   [key: ConfidenceKeys]: number
+  [key: imgUrlKeys]: string
 }
 
 export interface Table {
